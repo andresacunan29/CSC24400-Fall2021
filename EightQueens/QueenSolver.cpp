@@ -2,57 +2,57 @@
 
 using namespace std;
 
-#define BOARD_SIZE 15
+#define BOARD_SIZE 100
 
 char myArray[BOARD_SIZE][BOARD_SIZE];
 
 bool canPlace(int, int);
 
-void printRowBorder()
+void printRowBorder(int bS)
 {
-  for (int col=0; col<BOARD_SIZE; col++)
+  for (int col=0; col<bS; col++)
     cout << "+-";
   cout << '+' << endl;
 }
 
-void printBoard()
+void printBoard(int size)
 {
-  for (int row=0; row<BOARD_SIZE; row++)
+  for (int row=0; row<size; row++)
   {
-    printRowBorder();
-    for (int col=0; col<BOARD_SIZE; col++)
+    printRowBorder(size);
+    for (int col=0; col<size; col++)
     {
       cout << "|" ;
       cout << myArray[row][col];
     }
     cout << "|" << endl;
   }
-  printRowBorder();
+  printRowBorder(size);
 }
 
-void initBoard()
+void initBoard(int size)
 {
-  for (int row=0; row<BOARD_SIZE; row++)
+  for (int row=0; row<size; row++)
   {
-    for (int col=0; col<BOARD_SIZE; col++)
+    for (int col=0; col<size; col++)
       myArray[row][col]=' ';
   }
 }
 
-bool solveBoard (int fromCol)
+bool solveBoard (int fromCol, int numRows)
 {
   // base case - if we've filled the board, we are done. SUCCESSFULLY!
-  if (fromCol >= BOARD_SIZE)
+  if (fromCol >= numRows)
     return  true;
 
   // try to place the quees in each possible row in this column.
-  for (int row=0; row< BOARD_SIZE; row++)
+  for (int row=0; row< numRows; row++)
     {
       if ( canPlace(row, fromCol) )
 	{
 	  // add code to try and place the queen ...
 	  myArray[row][fromCol] = 'Q';
-	  bool itWorked = solveBoard(fromCol+1);
+	  bool itWorked = solveBoard(fromCol+1, numRows);
 
 	  if (itWorked)
 	    return true;
@@ -88,7 +88,7 @@ bool canPlace(int fromRow, int fromCol)
 
   // check LL diagonal
   offset=1;
-  while(fromCol-offset>=0 && fromRow+offset<BOARD_SIZE)
+  while(fromCol-offset>=0 && fromRow+offset<BOARD_SIZE) // uh, oh, we should FIX!
     {
       if (myArray[fromRow+offset][fromCol-offset] == 'Q')
 	return false;
@@ -100,19 +100,23 @@ bool canPlace(int fromRow, int fromCol)
   
 }
 
-bool solveBoard()
+bool solveBoard(int size)
 {
   cerr << "Solve  board not yet implemented!" << endl;
   
-  return solveBoard(0);
+  return solveBoard(0, size);
   
 }
 
 int main(int argc, char *argv[])
 {
-  initBoard();
-  solveBoard();
-  printBoard();
+  int probSize;
+  cout << "Enter this actual board size: ";
+  cin >> probSize;
+  
+  initBoard(probSize);
+  solveBoard(probSize);
+  printBoard(probSize);
   
   return 0;
 }
